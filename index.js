@@ -8,7 +8,24 @@ var swaggerUi = require("swagger-ui-express");
 var indexRouter = require('./routes/index.routes');
 var usersRouter = require('./routes/user.routes');
 var adminRouter = require('./routes/admin.routes');
-const YAML = require('yamljs');
+//const YAML = require('yamljs');
+
+
+
+const swaggerPath = path.join(__dirname, 'swagger.js')
+const swaggerOptions = {
+  swaggerDefinition: {
+    info: {
+      title: 'Karohy Api',
+      description: 'This the Rest Api for the backend of the App',
+      version: '1.0.0',
+    },
+  },
+  apis: [swaggerPath], 
+};
+
+
+
 
 var app = express();
 
@@ -39,7 +56,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Swagger
-const swaggerDocument = YAML.load(path.join(__dirname, 'swagger-config.yaml'));
+//const swaggerDocument = YAML.load(path.join(__dirname, 'swagger-config.yaml'));
+const swaggerDocument = swaggerJsdoc(swaggerOptions);
+
 
 
 // ROUTES
