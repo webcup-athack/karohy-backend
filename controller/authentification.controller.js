@@ -1,4 +1,3 @@
-// controllers/authentication-controller.js
 const {
   checkEmailFormat,
   normalizeString,
@@ -8,32 +7,27 @@ const utilisateurService = require('../service/user.service');
 const adminService = require('../service/admin.service');
 const User = require('../model/user.model');
 
-const login = (request, response) => {
+// Importing necessary libraries
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const SECRET_KEY = 'tsanta'; // Store this in a .env or another secure place
+
+const login = async (request, response) => {
   const { email, password } = request.body;
 
-  // Appeler la fonction pour authentifier l'utilisateur
-  utilisateurService
-    .authenticateUser(email, password)
-    .then((user) => {
-      if (user) {
-        // L'utilisateur est authentifié avec succès
-        return formatAPIResponse(response, {
-          status: 200,
-          message: 'Successfully connected',
-          datas: {
-            user: User.formatLoginUser(user),
-          },
-        });
-      } else {
-        // L'utilisateur n'a pas pu être authentifié
-        return formatAPIResponse(response, {
-          status: 400,
-          message: 'Incorrect email or password',
-        });
-      }
+  utilisateurService.authenticateUser(email,password).then(async (user) => {
+      
+      const token = jwt.sign({ userid: user.id }, SECRET_KEY, { expiresIn: '24h' });
+      return formatAPIResponse(response, {
+        status: 200,
+        message: 'Successfully connected',
+        datas: {
+          user: User.formatLoginUser(user),
+          token
+        },
+      });
     })
     .catch((err) => {
-      // Une erreur s'est produite lors de l'authentification
       console.log('error', err);
       return formatAPIResponse(response, {
         status: 400,
@@ -47,51 +41,74 @@ const inscription = (request, response) => {
   const { firstname, lastname, email, password, birth_date, phone_number } =
     request.body;
 
-  const userData = {
-    prenom: firstname,
-    nom: lastname,
-    email: email,
-    motDePasse: password, // Make sure to hash the password before saving it in production
-    dateNaissance: birth_date,
-    numTelephone: phone_number,
-  };
-
-  // Call the createUser function to register the user
-  utilisateurService
-    .createUser(userData)
-    .then((user) => {
-      // User registration successful
-      return formatAPIResponse(response, {
-        status: 200,
-        message: 'Registered user successfully',
-        datas: User.formatRegisterUser(user),
-      });
-    })
-    .catch((err) => {
-      // An error occurred during user registration
-      console.log('error', err);
+  bcrypt.hash(password, 10, (err, hashedPassword) => {
+    if (err) {
       return formatAPIResponse(response, {
         status: 400,
-        message: 'An error occured while registering user',
-        error: formatError(err),
+        message: 'Error hashing password',
+        error: err,
       });
-    });
+    }
+    console.log(hashedPassword);
+    const userData = {
+      prenom: firstname,
+      nom: lastname,
+      email: email,
+      motDePasse: hashedPassword,
+      dateNaissance: birth_date,
+      numTelephone: phone_number,
+    };
+
+    utilisateurService
+      .createUser(userData)
+      .then((user) => {
+        console.log(user)
+        const token = jwt.sign({ userid: user.id }, SECRET_KEY, { expiresIn: '24h' }); // Generate the JWT token for the registered user
+
+        return formatAPIResponse(response, {
+          status: 200,
+          message: 'Registered user successfully',
+          datas: {
+            user: User.formatRegisterUser(user),
+            token // Include the token in the response
+          },
+        });
+      })
+      .catch((err) => {
+        console.log('error', err);
+        return formatAPIResponse(response, {
+          status: 400,
+          message: 'An error occurred while registering user',
+          error: formatError(err),
+        });
+      });
+  });
 };
 
-const loginAdmin = (request, response) => {
+
+const loginAdmin = async (request, response) => {
   const { email, password } = request.body;
 
   adminService
-    .authenticateAdmin(email, password)
-    .then((admin) => {
-      // If admin
-      return formatAPIResponse(response, {
-        status: 200,
-        message: 'Admin connecté avec succès',
-        datas: {
-          admin,
-        },
-      });
+    .authenticateAdmin(email)
+    .then(async (admin) => {
+      if (admin && await bcrypt.compare(password, admin.motDePasse)) {
+        const token = jwt.sign({ adminId: admin.id }, SECRET_KEY, { expiresIn: '24h' });
+        return formatAPIResponse(response, {
+          status: 200,
+          message: 'Admin connecté avec succès',
+          datas: {
+            admin,
+            token
+          },
+        });
+      } else {
+        return formatAPIResponse(response, {
+          status: 400,
+          message: "Une erreur s'est produite lors de l'authentification de l'admin",
+          error: 'Incorrect email or password',
+        });
+      }
     })
     .catch((err) => {
       console.log('error', err);

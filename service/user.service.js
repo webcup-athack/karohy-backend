@@ -2,6 +2,7 @@ const { MongooseError } = require("mongoose");
 const { checkEmailFormat } = require("../helper/string.helper");
 const User = require("../model/user.model");
 const GeneralException = require("../utils/Error/GeneralException");
+const bcrypt = require('bcrypt');
 
 const authenticateUser = async (email, password) => {
     try {
@@ -11,11 +12,11 @@ const authenticateUser = async (email, password) => {
         if (password === undefined || ( password.trim() === "")) {
             throw new GeneralException("ERROR_INPUT_INVALID", "Invalid password");
         }
-        const user = await User.findOne({ email: email, motDePasse: password });
-        if (user) {
+        const user = await User.findOne({ email: email });
+        if (user && await bcrypt.compare(password, user.motDePasse)) {
             return user;
         } else {
-            throw new GeneralException("ERROR_AUTH_USER_DENIED", "Authentication failed, user or password is invalid");
+            throw new GeneralException("ERROR_AUTH_USER_DENIED", "Authentication failed, email or password is invalid");
         }
     } catch (error) {
         if (error instanceof GeneralException) {
