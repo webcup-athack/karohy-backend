@@ -1,6 +1,8 @@
 const { checkEmailFormat } = require("../helper/string.helper");
 const Admin = require("../model/admin.model");
 const GeneralException = require("../utils/Error/GeneralException");
+const bcrypt = require('bcrypt');
+
 
 const authenticateAdmin = async (email, password) => {
     
@@ -11,8 +13,8 @@ const authenticateAdmin = async (email, password) => {
         if (password === undefined || ( password.trim() === "")) {
             throw new GeneralException("ERROR_INPUT_INVALID", "Invalid password");
         }
-        const user = await Admin.findOne({ email: email, motDePasse: password });
-        if (user) {
+        const user = await Admin.findOne({ email: email });
+        if (user && await bcrypt.compare(password, user.motDePasse)) {
             return user;
         } else {
             throw new GeneralException("ERROR_AUTH_ADMIN_DENIED", "Authentication failed, usermail or password is invalid");

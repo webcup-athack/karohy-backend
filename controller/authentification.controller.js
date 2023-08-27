@@ -90,9 +90,9 @@ const loginAdmin = async (request, response) => {
   const { email, password } = request.body;
 
   adminService
-    .authenticateAdmin(email)
+    .authenticateAdmin(email,password)
     .then(async (admin) => {
-      if (admin && await bcrypt.compare(password, admin.motDePasse)) {
+
         const token = jwt.sign({ adminId: admin.id }, SECRET_KEY, { expiresIn: '24h' });
         return formatAPIResponse(response, {
           status: 200,
@@ -102,13 +102,9 @@ const loginAdmin = async (request, response) => {
             token
           },
         });
-      } else {
-        return formatAPIResponse(response, {
-          status: 400,
-          message: "Une erreur s'est produite lors de l'authentification de l'admin",
-          error: 'Incorrect email or password',
-        });
-      }
+      
+
+
     })
     .catch((err) => {
       console.log('error', err);
