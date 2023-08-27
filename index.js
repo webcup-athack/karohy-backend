@@ -45,7 +45,7 @@ const swaggerDocument = YAML.load('./swagger-config.yaml');
 const version = process.env.VERSION || 'v1'
 const apiBaseUrl = `/api/${version}`
 
-app.use(apiBaseUrl, indexRouter);
+app.use("/", indexRouter);
 
 app.use(`${apiBaseUrl}/api-docs`,
   swaggerUi.serve,
