@@ -39,7 +39,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Swagger
-const swaggerDocument = YAML.load(path.join(__dirname, 'swagger-config.yaml'));
+//const swaggerDocument = YAML.load(path.join(__dirname, 'swagger-config.yaml'));
+const swaggerDocument = YAML.load('./swagger-config.yaml');
 
 
 // ROUTES
