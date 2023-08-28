@@ -5,9 +5,9 @@
       "title": "Authentication API",
       "description": "API for User and Admin authentication"
     },
-    "host": "http://localhost:3000",
+    "host": "karohy-backend.vercel.app",
     "basePath": "/",
-    "schemes": ["http"],
+    "schemes": ["https"],
     "paths": {
       "/api/v1/users/login": {
         "post": {
