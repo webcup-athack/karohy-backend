@@ -35,10 +35,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Swagger
-const swaggerDocument = YAML.load(path.join(__dirname, 'swagger-config.yaml'));
-//const swaggerDocument = YAML.load('./swagger-config.yaml');
-
 
 // ROUTES
 const version = process.env.VERSION || 'v1'
@@ -46,7 +42,7 @@ const apiBaseUrl = `/api/${version}`
 
 app.use("/", indexRouter);
 
-app.get('/api-docs', (req, res) => {
+app.get(`${apiBaseUrl}/api-docs`, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'swagger.html'));
 });
 
