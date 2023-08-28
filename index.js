@@ -37,10 +37,6 @@ const apiBaseUrl = `/api/${version}`
 
 app.use("/", indexRouter);
 
-app.get('/api-docs', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'swagger.html'));
-});
-
 app.get('/docs', (req, res) => {
   res.render('swagger', { swaggerURL: '/swagger.json' });
 });
