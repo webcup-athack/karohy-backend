@@ -7,6 +7,7 @@ var indexRouter = require('./routes/index.routes');
 var usersRouter = require('./routes/user.routes');
 var adminRouter = require('./routes/admin.routes');
 const YAML = require('yamljs');
+const cors = require('cors');
 
 var app = express();
 
@@ -18,6 +19,7 @@ dotenv.config({ path: '.env' });
 const dbMongoose = require('./configuration/mongodb.databaseconnector');
 dbMongoose.connectDB();
 
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -46,6 +48,15 @@ app.use("/", indexRouter);
 app.get('/api-docs', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'swagger.html'));
 });
+
+app.get('/docs', (req, res) => {
+  res.render('swagger', { swaggerURL: '/swagger.json' });
+});
+
+app.get('/swagger.json', (req, res) => {
+  res.sendFile(__dirname + '/views/swagger.json');
+});
+
 
 app.use(`${apiBaseUrl}/users`, usersRouter);
 app.use(`${apiBaseUrl}/admin`, adminRouter);
