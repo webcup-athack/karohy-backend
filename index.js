@@ -3,8 +3,6 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var swaggerJsdoc = require("swagger-jsdoc");
-var swaggerUi = require("swagger-ui-express");
 var indexRouter = require('./routes/index.routes');
 var usersRouter = require('./routes/user.routes');
 var adminRouter = require('./routes/admin.routes');
@@ -31,7 +29,6 @@ app.use((request, response, next) => {
   response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -49,10 +46,9 @@ const apiBaseUrl = `/api/${version}`
 
 app.use("/", indexRouter);
 
-app.use(`${apiBaseUrl}/api-docs`,
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerDocument)
-);
+app.get('/api-docs', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'swagger.html'));
+});
 
 app.use(`${apiBaseUrl}/users`, usersRouter);
 app.use(`${apiBaseUrl}/admin`, adminRouter);
