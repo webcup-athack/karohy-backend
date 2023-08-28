@@ -1,8 +1,4 @@
-const {
-  checkEmailFormat,
-  normalizeString,
-} = require('../helper/string.helper');
-const { formatAPIResponse, formatError } = require('../helper/api.helper');
+const { formatAPIResponse } = require('../helper/api.helper');
 const utilisateurService = require('../service/user.service');
 const adminService = require('../service/admin.service');
 const User = require('../model/user.model');
@@ -15,24 +11,27 @@ const SECRET_KEY = 'tsanta'; // Store this in a .env or another secure place
 const login = async (request, response) => {
   const { email, password } = request.body;
 
-  utilisateurService.authenticateUser(email,password).then(async (user) => {
-      
-      const token = jwt.sign({ userid: user.id }, SECRET_KEY, { expiresIn: '24h' });
+  utilisateurService
+    .authenticateUser(email, password)
+    .then(async (user) => {
+      const token = jwt.sign({ userid: user.id }, SECRET_KEY, {
+        expiresIn: '24h',
+      });
       return formatAPIResponse(response, {
         status: 200,
         message: 'Successfully connected',
         datas: {
           user: User.formatLoginUser(user),
-          token
+          token,
         },
       });
     })
     .catch((err) => {
       console.log('error', err);
       return formatAPIResponse(response, {
-        status: 400,
+        status: err.status || 400,
         message: 'Incorrect email or password',
-        error: formatError(err),
+        error: err,
       });
     });
 };
@@ -62,56 +61,52 @@ const inscription = (request, response) => {
     utilisateurService
       .createUser(userData)
       .then((user) => {
-        console.log(user)
-        const token = jwt.sign({ userid: user.id }, SECRET_KEY, { expiresIn: '24h' }); // Generate the JWT token for the registered user
+        console.log(user);
+        const token = jwt.sign({ userid: user.id }, SECRET_KEY, {
+          expiresIn: '24h',
+        }); // Generate the JWT token for the registered user
 
         return formatAPIResponse(response, {
           status: 200,
           message: 'Registered user successfully',
           datas: {
             user: User.formatRegisterUser(user),
-            token // Include the token in the response
+            token, // Include the token in the response
           },
         });
       })
       .catch((err) => {
         console.log('error', err);
         return formatAPIResponse(response, {
-          status: 400,
+          status: err.status || 400,
           message: 'An error occurred while registering user',
-          error: formatError(err),
+          error: err,
         });
       });
   });
 };
 
-
 const loginAdmin = async (request, response) => {
   const { email, password } = request.body;
 
   adminService
-    .authenticateAdmin(email,password)
+    .authenticateAdmin(email, password)
     .then(async (admin) => {
-
-        const token = jwt.sign({ adminId: admin.id }, SECRET_KEY, { expiresIn: '24h' });
-        return formatAPIResponse(response, {
-          status: 200,
-          message: 'Admin connecté avec succès',
-          datas: {
-            admin,
-            token
-          },
-        });
-      
-
-
+      const token = jwt.sign({ adminId: admin.id }, SECRET_KEY, {
+        expiresIn: '24h',
+      });
+      return formatAPIResponse(response, {
+        status: 200,
+        message: 'Admin connecté avec succès',
+        datas: {
+          admin,
+          token,
+        },
+      });
     })
     .catch((err) => {
-      console.log('error', err);
       return formatAPIResponse(response, {
-        status: 400,
-        message:
-          "Une erreur s'est produite lors de l'authentification de l'admin",
+        status: err.status || 400,
         error: err,
       });
     });

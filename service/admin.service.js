@@ -1,34 +1,40 @@
-const { checkEmailFormat } = require("../helper/string.helper");
-const Admin = require("../model/admin.model");
-const GeneralException = require("../utils/Error/GeneralException");
+const { ERROR } = require('../error/Error');
+const { checkEmailFormat } = require('../helper/string.helper');
+const Admin = require('../model/admin.model');
+const GeneralException = require('../utils/Error/GeneralException');
 const bcrypt = require('bcrypt');
 
-
 const authenticateAdmin = async (email, password) => {
-    
-    try {
-        if (!checkEmailFormat(email)) {
-            throw new GeneralException("ERROR_INPUT_INVALID", "Invalid email");
-        } 
-        if (password === undefined || ( password.trim() === "")) {
-            throw new GeneralException("ERROR_INPUT_INVALID", "Invalid password");
-        }
-        const user = await Admin.findOne({ email: email });
-        if (user && await bcrypt.compare(password, user.motDePasse)) {
-            return user;
-        } else {
-            throw new GeneralException("ERROR_AUTH_ADMIN_DENIED", "Authentication failed, usermail or password is invalid");
-        }
-    } catch (error) {
-        if (error instanceof GeneralException) {
-            throw error;
-        } else {
-            throw new GeneralException("ERROR_AUTH_ADMIN_ERROR", "Authentication failed");
-        }
+  try {
+    if (!checkEmailFormat(email)) {
+      throw GeneralException.formatException(
+        ERROR.AUTHENTICATION.INVALID_EMAIL,
+      );
     }
-
+    if (password === undefined || password.trim() === '') {
+      throw GeneralException.formatException(
+        ERROR.AUTHENTICATION.INVALID_PASSWORD,
+      );
+    }
+    const user = await Admin.findOne({ email: email });
+    if (user && (await bcrypt.compare(password, user.motDePasse))) {
+      return user;
+    } else {
+      throw GeneralException.formatException(
+        ERROR.AUTHENTICATION.INVALID_CREDENTIALS,
+      );
+    }
+  } catch (error) {
+    if (error instanceof GeneralException) {
+      throw error;
+    } else {
+      throw GeneralException.formatException(
+        ERROR.AUTHENTICATION.UNKNOWN_ERROR,
+      );
+    }
+  }
 };
 
 module.exports = {
-    authenticateAdmin: authenticateAdmin
-}
+  authenticateAdmin: authenticateAdmin,
+};
