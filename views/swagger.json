@@ -1,243 +1,245 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "version": "1.0.0",
-      "title": "Authentication API",
-      "description": "API for User and Admin authentication"
-    },
-    "host": "karohy-back.vercel.app",
-    "basePath": "/",
-    "schemes": ["https"],
-    "paths": {
-      "/api/v1/users/login": {
-        "post": {
-          "tags": ["Authentification - User"],
-          "summary": "API to log in User",
-          "produces": ["application/json"],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "description": "User's login details",
-              "required": true,
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "default": "cedric@gmail.com"
-                  },
-                  "password": {
-                    "type": "string",
-                    "default": "1234"
-                  }
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Authentication API",
+    "description": "API for User and Admin authentication"
+  },
+  "host": "karohy-back.vercel.app",
+  "basePath": "/",
+  "schemes": ["https"],
+  "paths": {
+    "/api/v1/users/login": {
+      "post": {
+        "tags": ["Authentification - User"],
+        "summary": "API to log in User",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User's login details",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "default": "cedric@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "default": "1234"
                 }
               }
             }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful response",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "success": {
-                    "type": "boolean"
-                  },
-                  "message": {
-                    "type": "string"
-                  },
-                  "datas": {
-                    "type": "object",
-                    "properties": {
-                      "user": {
-                        "$ref": "#/definitions/User"
-                      }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "datas": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/definitions/User"
+                    },
+                    "token": {
+                      "type": "string"
                     }
                   }
                 }
               }
-            },
-            "400": {
-              "description": "Failed response",
-              "schema": {
-                "$ref": "#/definitions/Error"
-              }
             }
-          }
-        }
-      },
-      "/api/v1/users/register": {
-        "post": {
-          "tags": ["Authentification - User"],
-          "summary": "API to register User",
-          "produces": ["application/json"],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "description": "User's registration details",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/UserRegistration"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful response",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "success": {
-                    "type": "boolean"
-                  },
-                  "message": {
-                    "type": "string"
-                  },
-                  "datas": {
-                    "type": "object",
-                    "properties": {
-                      "user": {
-                        "$ref": "#/definitions/User"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "Failed response",
-              "schema": {
-                "$ref": "#/definitions/Error"
-              }
-            }
-          }
-        }
-      },
-      "/api/v1/admin/login": {
-        "post": {
-          "tags": ["Authentification - Admin"],
-          "summary": "API to log in Admin",
-          "produces": ["application/json"],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "description": "Admin's login details",
-              "required": true,
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful response",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "success": {
-                    "type": "boolean"
-                  },
-                  "message": {
-                    "type": "string"
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "Failed response",
-              "schema": {
-                "$ref": "#/definitions/Error"
-              }
+          },
+          "400": {
+            "description": "Failed response",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
           }
         }
       }
     },
-    "definitions": {
-      "User": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string"
-          },
-          "firstname": {
-            "type": "string"
-          },
-          "lastname": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "birth_date": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "phone_number": {
-            "type": "string"
+    "/api/v1/users/register": {
+      "post": {
+        "tags": ["Authentification - User"],
+        "summary": "API to register User",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User's registration details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserRegistration"
+            }
           }
-        }
-      },
-      "UserRegistration": {
-        "type": "object",
-        "properties": {
-          "firstname": {
-            "type": "string"
-          },
-          "lastname": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "birth_date": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "phone_number": {
-            "type": "string"
-          }
-        }
-      },
-      "Error": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "message": {
-            "type": "string"
-          },
-          "datas": {
-            "type": "null"
-          },
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "datas": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/definitions/User"
+                    }
+                  }
+                }
               }
+            }
+          },
+          "400": {
+            "description": "Failed response",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/login": {
+      "post": {
+        "tags": ["Authentification - Admin"],
+        "summary": "API to log in Admin",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Admin's login details",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed response",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "firstname": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "birth_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "phone_number": {
+          "type": "string"
+        }
+      }
+    },
+    "UserRegistration": {
+      "type": "object",
+      "properties": {
+        "firstname": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "birth_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "phone_number": {
+          "type": "string"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "datas": {
+          "type": "null"
+        },
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
             }
           }
         }
       }
     }
   }
-  
+}

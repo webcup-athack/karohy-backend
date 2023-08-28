@@ -30,7 +30,6 @@ const login = async (request, response) => {
       console.log('error', err);
       return formatAPIResponse(response, {
         status: err.status || 400,
-        message: 'Incorrect email or password',
         error: err,
       });
     });
@@ -44,7 +43,6 @@ const inscription = (request, response) => {
     if (err) {
       return formatAPIResponse(response, {
         status: 400,
-        message: 'Error hashing password',
         error: err,
       });
     }
@@ -79,7 +77,6 @@ const inscription = (request, response) => {
         console.log('error', err);
         return formatAPIResponse(response, {
           status: err.status || 400,
-          message: 'An error occurred while registering user',
           error: err,
         });
       });
