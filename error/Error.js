@@ -40,6 +40,18 @@ const ERROR_STATUS_CODE = {
 };
 
 const ERROR = {
+  TOKEN: {
+    INVALID_OR_EXPIRED_TOKEN: {
+      status: ERROR_STATUS_CODE.UNAUTHORIZED,
+      code: 'ERROR_INVALID_OR_EXPIRED_TOKEN',
+      message: 'Invalid or expired token',
+    },
+    MISSING_TOKEN: {
+      status: ERROR_STATUS_CODE.BAD_REQUEST,
+      code: 'ERROR_MISSING_TOKEN',
+      message: 'Token is missing',
+    },
+  },
   AUTHENTICATION: {
     INVALID_EMAIL: {
       status: ERROR_STATUS_CODE.BAD_REQUEST,
@@ -58,7 +70,7 @@ const ERROR = {
     },
     EMAIL_ALREADY_EXISTS: {
       status: ERROR_STATUS_CODE.CONFLICT,
-      code: 'ERROR_EMAIL_ALREADY_EXISTS'
+      code: 'ERROR_EMAIL_ALREADY_EXISTS',
     },
     UNKNOWN_ERROR: {
       status: ERROR_STATUS_CODE.INTERNAL_SERVER_ERROR,
