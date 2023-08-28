@@ -2,12 +2,12 @@
   "swagger": "2.0",
   "info": {
     "version": "1.0.0",
-    "title": "Authentication API",
-    "description": "API for User and Admin authentication"
+    "title": "Karohy backend API Swagger documentation",
+    "description": "Swagger API doc for karohy"
   },
-  "host": "karohy-back.vercel.app",
+  "host": "{{host}}",
   "basePath": "/",
-  "schemes": ["https"],
+  "schemes": ["{{scheme}}"],
   "paths": {
     "/api/v1/users/login": {
       "post": {
