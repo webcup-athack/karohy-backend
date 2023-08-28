@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: ' KAROHY Backend' });
+  res.render('index', { title: ' Karohy' });
 });
 
 module.exports = router;
