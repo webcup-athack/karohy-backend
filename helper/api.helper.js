@@ -3,7 +3,7 @@ function formatAPIResponse(response,{
     status,
     message = '',
     datas = {},
-    error
+    error = {}
 }) {
 
     const isSuccess = (status) => {
