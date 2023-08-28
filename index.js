@@ -36,13 +36,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+
 // ROUTES
 const version = process.env.VERSION || 'v1'
 const apiBaseUrl = `/api/${version}`
 
 app.use("/", indexRouter);
 
-app.get(`${apiBaseUrl}/api-docs`, (req, res) => {
+app.get('/api-docs', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'swagger.html'));
 });
 
