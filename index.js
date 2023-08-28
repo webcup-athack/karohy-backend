@@ -80,7 +80,7 @@ app.get('/docs', (req, res) => {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.50.0/swagger-ui-bundle.js"></script>
         <script>
           const ui = SwaggerUIBundle({
-            spec: ${modifiedSwaggerContent}, // URL to your modified swagger.json
+            spec: ${modifiedSwaggerContent}, // URL to modified swagger.json
             dom_id: '#swagger-ui',
           });
         </script>
