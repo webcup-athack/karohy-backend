@@ -5,6 +5,7 @@ const connectorMongodb = require('../../configuration/mongodb.databaseconnector'
 const { generateRandomString } = require('../../helper/string.helper');
 const Admin = require('../../model/admin.model');
 const { authenticateAdmin } = require('../../service/admin.service');
+const { ERROR } = require('../../error/Error');
 
 
 require('dotenv').config();
@@ -58,8 +59,8 @@ describe('Admin Service', () => {
                 await authenticateAdmin(invalidEmail, password);
             } catch (error) {
                 expect(error).to.be.instanceOf(GeneralException);
-                expect(error.code).to.equal('ERROR_INPUT_INVALID');
-                expect(error.message).to.equal('Invalid email');
+                expect(error.code).to.equal(ERROR.AUTHENTICATION.INVALID_EMAIL.code);
+                expect(error.message).to.equal(ERROR.AUTHENTICATION.INVALID_EMAIL.message);
             }
         });
     
@@ -71,8 +72,8 @@ describe('Admin Service', () => {
                 await authenticateAdmin(email, emptyPassword);
             } catch (error) {
                 expect(error).to.be.instanceOf(GeneralException);
-                expect(error.code).to.equal('ERROR_INPUT_INVALID');
-                expect(error.message).to.equal('Invalid password');
+                expect(error.code).to.equal(ERROR.AUTHENTICATION.INVALID_PASSWORD.code);
+                expect(error.message).to.equal(ERROR.AUTHENTICATION.INVALID_PASSWORD.message);
             }
         });
     
@@ -86,8 +87,8 @@ describe('Admin Service', () => {
                 await authenticateAdmin(invalidUser.email, invalidUser.motDePasse);
             } catch (error) {
                 expect(error).to.be.instanceOf(GeneralException);
-                expect(error.code).to.equal('ERROR_AUTH_ADMIN_DENIED');
-                expect(error.message).to.contain('Authentication failed');
+                expect(error.code).to.equal(ERROR.AUTHENTICATION.INVALID_CREDENTIALS.code);
+                expect(error.message).to.contain(ERROR.AUTHENTICATION.INVALID_CREDENTIALS.message);
             }
         });
 

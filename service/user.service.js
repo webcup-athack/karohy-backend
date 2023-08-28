@@ -51,7 +51,7 @@ const createUser = async (data) => {
       );
     }
 
-    if (data.password === undefined || data.password.trim() === '') {
+    if (data.motDePasse === undefined || data.motDePasse.trim() === '') {
       throw GeneralException.formatException(
         ERROR.AUTHENTICATION.INVALID_PASSWORD,
       );

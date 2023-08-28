@@ -134,7 +134,9 @@ describe('User Service', () => {
         await createUser(userTest);
       } catch (error) {
         expect(error).to.be.instanceOf(GeneralException);
-        expect(error.code).to.equal(ERROR.AUTHENTICATION.EMAIL_ALREADY_EXISTS);
+        expect(error.code).to.equal(
+          ERROR.AUTHENTICATION.EMAIL_ALREADY_EXISTS.code,
+        );
       }
     });
 
