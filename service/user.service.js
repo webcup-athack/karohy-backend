@@ -1,4 +1,3 @@
-const { MongooseError } = require('mongoose');
 const { checkEmailFormat } = require('../helper/string.helper');
 const User = require('../model/user.model');
 const GeneralException = require('../utils/Error/GeneralException');
@@ -56,7 +55,8 @@ const createUser = async (data) => {
         ERROR.AUTHENTICATION.INVALID_PASSWORD,
       );
     }
-
+    const hashedPassword = await bcrypt.hash(data.motDePasse, 10);
+    data.motDePasse = hashedPassword;
     const newUser = new User(data);
     const user = await newUser.save();
     if (user) user.motDePasse = '';
@@ -65,6 +65,7 @@ const createUser = async (data) => {
         ERROR.AUTHENTICATION.UNKNOWN_ERROR,
       );
     }
+
     return user;
   } catch (errorCreateUser) {
     if (errorCreateUser instanceof GeneralException) {

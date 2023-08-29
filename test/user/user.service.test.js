@@ -18,11 +18,14 @@ describe('User Service', () => {
   });
 
   describe('authenticateUser', () => {
+    const testEmail = `karohy${generateRandomString(4)}@karohy.mg`;
+    const testMdp = generateRandomString(8);
+
     const userTest = {
       nom: generateRandomString(10),
       prenom: generateRandomString(20),
-      email: `karohy${generateRandomString(4)}@karohy.mg`,
-      motDePasse: generateRandomString(8),
+      email: testEmail,
+      motDePasse: testMdp,
       dateNaissance: Date.now(),
       numMobileMoney: '+261332212345',
       numTelephone: '+261332212345',
@@ -38,10 +41,7 @@ describe('User Service', () => {
 
     it('should authenticate a user with valid email and password', async () => {
       try {
-        const user = await authenticateUser(
-          userTest.email,
-          userTest.motDePasse,
-        );
+        const user = await authenticateUser(testEmail, testMdp);
         expect(user).to.exist;
         expect(user.email).to.equal(userTest.email);
       } catch (error) {

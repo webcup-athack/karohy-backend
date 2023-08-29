@@ -39,48 +39,38 @@ const inscription = (request, response) => {
   const { firstname, lastname, email, password, birth_date, phone_number } =
     request.body;
 
-  bcrypt.hash(password, 10, (err, hashedPassword) => {
-    if (err) {
+  const userData = {
+    prenom: firstname,
+    nom: lastname,
+    email: email,
+    motDePasse: password,
+    dateNaissance: birth_date,
+    numTelephone: phone_number,
+  };
+
+  utilisateurService
+    .createUser(userData)
+    .then((user) => {
+      const token = jwt.sign({ userid: user._id }, SECRET_KEY, {
+        expiresIn: '24h',
+      }); // Generate the JWT token for the registered user
+
       return formatAPIResponse(response, {
-        status: 400,
+        status: 200,
+        message: 'Registered user successfully',
+        datas: {
+          user: User.formatRegisterUser(user),
+          token, // Include the token in the response
+        },
+      });
+    })
+    .catch((err) => {
+      console.log('error', err);
+      return formatAPIResponse(response, {
+        status: err.status || 400,
         error: err,
       });
-    }
-    console.log(hashedPassword);
-    const userData = {
-      prenom: firstname,
-      nom: lastname,
-      email: email,
-      motDePasse: hashedPassword,
-      dateNaissance: birth_date,
-      numTelephone: phone_number,
-    };
-
-    utilisateurService
-      .createUser(userData)
-      .then((user) => {
-        console.log(user);
-        const token = jwt.sign({ userid: user.id }, SECRET_KEY, {
-          expiresIn: '24h',
-        }); // Generate the JWT token for the registered user
-
-        return formatAPIResponse(response, {
-          status: 200,
-          message: 'Registered user successfully',
-          datas: {
-            user: User.formatRegisterUser(user),
-            token, // Include the token in the response
-          },
-        });
-      })
-      .catch((err) => {
-        console.log('error', err);
-        return formatAPIResponse(response, {
-          status: err.status || 400,
-          error: err,
-        });
-      });
-  });
+    });
 };
 
 const loginAdmin = async (request, response) => {

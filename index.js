@@ -63,7 +63,6 @@ app.get('/docs', (req, res) => {
   ) {
     (host = `localhost:${port}`), (scheme = ['http']);
   }
-  console.log(scheme);
 
   fs.readFile('./views/swagger.json', 'utf8', (err, data) => {
     if (err) {
