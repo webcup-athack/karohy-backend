@@ -47,15 +47,18 @@ const ENVIRONMENT_NAMES = {
 function modifySwaggerHost(content, host, scheme) {
   const newContent = JSON.parse(content);
   newContent.host = host;
-  newContent.schemes = [scheme];
+  newContent.schemes = scheme;
   return JSON.stringify(newContent); // Convert back to string
 }
 
 app.get('/docs', (req, res) => {
   let host = process.env.HOST || req.headers.host;
-  let scheme = process.env.SCHEME || 'http';
-  if (process.env.ENVIRONMENT === ENVIRONMENT_NAMES.LOCAL) {
-    (host = `localhost:${port}`), (scheme = 'http');
+  let scheme = [process.env.SCHEME] || ['https'];
+  if (
+    process.env.ENVIRONMENT === ENVIRONMENT_NAMES.LOCAL ||
+    host === `localhost:${port}`
+  ) {
+    (host = `localhost:${port}`), (scheme = ['http']);
   }
 
   fs.readFile('./views/swagger.json', 'utf8', (err, data) => {
