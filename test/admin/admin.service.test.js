@@ -43,7 +43,7 @@ describe('Admin Service', () => {
       }
     });
 
-    it('should authenticate a admin with valid email and password', async () => {
+    it('should authenticate an admin with valid email and password', async () => {
       try {
         const user = await authenticateAdmin(testEmail, testMdp);
         expect(user).to.exist;
