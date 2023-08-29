@@ -52,7 +52,7 @@ function modifySwaggerHost(content, host, scheme) {
 }
 
 app.get('/docs', (req, res) => {
-  let host = process.env.HOST || `localhost:${port}`;
+  let host = process.env.HOST || req.headers.host;
   let scheme = process.env.SCHEME || 'http';
   if (process.env.ENVIRONMENT === ENVIRONMENT_NAMES.LOCAL) {
     (host = `localhost:${port}`), (scheme = 'http');
