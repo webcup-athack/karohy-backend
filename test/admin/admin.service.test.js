@@ -54,7 +54,7 @@ describe('Admin Service', () => {
       }
     });
 
-    it('should throw GeneralException with ERROR_INPUT_INVALID for invalid email', async () => {
+    it('should throw GeneralException with ERROR_INVALID_EMAIL for invalid email', async () => {
       const invalidEmail = 'invalidemail';
       const password = 'somepassword';
 
@@ -69,7 +69,7 @@ describe('Admin Service', () => {
       }
     });
 
-    it('should throw GeneralException with ERROR_INPUT_INVALID for empty password', async () => {
+    it('should throw GeneralException with ERROR_INVALID_PASSWORD for empty password', async () => {
       const email = 'validuser@example.com';
       const emptyPassword = '';
 
@@ -84,7 +84,7 @@ describe('Admin Service', () => {
       }
     });
 
-    it('should throw GeneralException with ERROR_AUTH_ADMIN_DENIED for invalid credentials', async () => {
+    it('should throw GeneralException with ERROR_INVALID_CREDENTIALS for invalid credentials', async () => {
       const invalidUser = {
         email: `invalid${userTest.email}`,
         motDePasse: 'invalidpassword',
