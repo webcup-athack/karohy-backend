@@ -11,7 +11,7 @@ import {
 const { generateRandomString } = require('../../helper/string.helper');
 const User = require('../../model/user.model');
 const { ERROR } = require('../../error/Error');
-
+ 
 describe('User Service', () => {
   before(async () => {
     await connectDB();
