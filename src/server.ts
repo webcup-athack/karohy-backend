@@ -3,11 +3,12 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var indexRouter = require('./routes/index.routes');
+// var indexRouter = require('./routes/index.routes');
+import indexRouter from './routes/index.routes';
 var usersRouter = require('./routes/user.routes');
 var adminRouter = require('./routes/admin.routes');
-const fs = require('fs');
-const cors = require('cors');
+import { readFile } from 'fs';
+import cors from 'cors';
 
 var app = express();
 
@@ -44,14 +45,14 @@ const ENVIRONMENT_NAMES = {
   STAGING: 'staging',
   PRODUCTION: 'production',
 };
-function modifySwaggerHost(content, host, scheme) {
+function modifySwaggerHost(content: any, host: any, scheme: any) {
   const newContent = JSON.parse(content);
   newContent.host = host;
   newContent.schemes = scheme;
   return JSON.stringify(newContent); // Convert back to string
 }
 
-app.get('/docs', (req, res) => {
+app.get('/docs', (req: any, res: any) => {
   let host = process.env.HOST || req.headers.host;
   let scheme =
     process.env.SCHEME === 'http' || process.env.SCHEME === 'https'
@@ -64,7 +65,7 @@ app.get('/docs', (req, res) => {
     (host = `localhost:${port}`), (scheme = ['http']);
   }
 
-  fs.readFile('./views/swagger.json', 'utf8', (err, data) => {
+  readFile('src/views/swagger.json', 'utf8', (err: any, data: any) => {
     if (err) {
       console.error('Error reading swagger.json:', err);
       return res.status(500).send('Internal Server Error');
@@ -97,7 +98,7 @@ app.get('/docs', (req, res) => {
   });
 });
 
-app.get(`/swagger.json`, (req, res) => {
+app.get(`/swagger.json`, (req: any, res: any) => {
   res.sendFile(__dirname + `/views/swagger.json`);
 });
 
@@ -105,12 +106,12 @@ app.use(`${apiBaseUrl}/users`, usersRouter);
 app.use(`${apiBaseUrl}/admin`, adminRouter);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function (req: any, res: any, next: any) {
   next(createError(404));
 });
 
-// error handler
-app.use(function (err, req, res, next) {
+// // error handler
+app.use(function (err: any, req: any, res: any, next: any) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -120,4 +121,4 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+export default app;

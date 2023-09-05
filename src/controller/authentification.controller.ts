@@ -2,18 +2,20 @@ const { formatAPIResponse } = require('../helper/api.helper');
 const utilisateurService = require('../service/user.service');
 const adminService = require('../service/admin.service');
 const User = require('../model/user.model');
+import { Request, Response } from 'express';
+import GeneralException from '../utils/Error/GeneralException';
 
 // Importing necessary libraries
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const SECRET_KEY = 'tsanta'; // Store this in a .env or another secure place
 
-const login = async (request, response) => {
+const login = async (request: Request, response: Response) => {
   const { email, password } = request.body;
 
   utilisateurService
     .authenticateUser(email, password)
-    .then(async (user) => {
+    .then(async (user: any) => {
       const token = jwt.sign({ userid: user.id }, SECRET_KEY, {
         expiresIn: '24h',
       });
@@ -26,7 +28,7 @@ const login = async (request, response) => {
         },
       });
     })
-    .catch((err) => {
+    .catch((err: GeneralException) => {
       console.log('error', err);
       return formatAPIResponse(response, {
         status: err.status || 400,
@@ -35,7 +37,7 @@ const login = async (request, response) => {
     });
 };
 
-const inscription = (request, response) => {
+const inscription = (request: Request, response: Response) => {
   const { firstname, lastname, email, password, birth_date, phone_number } =
     request.body;
 
@@ -50,7 +52,7 @@ const inscription = (request, response) => {
 
   utilisateurService
     .createUser(userData)
-    .then((user) => {
+    .then((user: any) => {
       const token = jwt.sign({ userid: user._id }, SECRET_KEY, {
         expiresIn: '24h',
       }); // Generate the JWT token for the registered user
@@ -64,7 +66,7 @@ const inscription = (request, response) => {
         },
       });
     })
-    .catch((err) => {
+    .catch((err: GeneralException) => {
       console.log('error', err);
       return formatAPIResponse(response, {
         status: err.status || 400,
@@ -73,12 +75,12 @@ const inscription = (request, response) => {
     });
 };
 
-const loginAdmin = async (request, response) => {
+const loginAdmin = async (request: Request, response: Response) => {
   const { email, password } = request.body;
 
   adminService
     .authenticateAdmin(email, password)
-    .then(async (admin) => {
+    .then(async (admin: any) => {
       const token = jwt.sign({ adminId: admin.id }, SECRET_KEY, {
         expiresIn: '24h',
       });
@@ -91,7 +93,7 @@ const loginAdmin = async (request, response) => {
         },
       });
     })
-    .catch((err) => {
+    .catch((err: GeneralException) => {
       return formatAPIResponse(response, {
         status: err.status || 400,
         error: err,

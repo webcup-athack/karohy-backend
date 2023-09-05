@@ -25,13 +25,7 @@ const authenticateAdmin = async (email, password) => {
       );
     }
   } catch (error) {
-    if (error instanceof GeneralException) {
-      throw error;
-    } else {
-      throw GeneralException.formatException(
-        ERROR.AUTHENTICATION.UNKNOWN_ERROR,
-      );
-    }
+    throw GeneralException.formatException(error);
   }
 };
 

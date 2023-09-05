@@ -25,13 +25,7 @@ const authenticateUser = async (email, password) => {
       );
     }
   } catch (error) {
-    if (error instanceof GeneralException) {
-      throw error;
-    } else {
-      throw GeneralException.formatException(
-        ERROR.AUTHENTICATION.UNKNOWN_ERROR,
-      );
-    }
+    throw GeneralException.formatException(error);
   }
 };
 
@@ -68,13 +62,7 @@ const createUser = async (data) => {
 
     return user;
   } catch (errorCreateUser) {
-    if (errorCreateUser instanceof GeneralException) {
-      throw errorCreateUser;
-    } else {
-      throw GeneralException.formatException(
-        ERROR.AUTHENTICATION.UNKNOWN_ERROR,
-      );
-    }
+    throw GeneralException.formatException(errorCreateUser);
   }
 };
 

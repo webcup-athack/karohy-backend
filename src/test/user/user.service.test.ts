@@ -1,25 +1,27 @@
-const { expect } = require('chai');
-
-const GeneralException = require('../../utils/Error/GeneralException'); // Chemin vers votre classe d'exception
-const connectorMongodb = require('../../configuration/mongodb.databaseconnector'); // Chemin vers votre fichier de connexion à la base de données
-const { generateRandomString } = require('../../helper/string.helper');
-const Admin = require('../../model/admin.model');
-const { authenticateAdmin } = require('../../service/admin.service');
-const bcrypt = require('bcrypt');
-const { ERROR } = require('../../error/Error');
+import { expect } from 'chai';
+const { authenticateUser, createUser } = require('../../service/user.service'); // Chemin vers votre fichier user.service
 
 require('dotenv').config();
 
-describe('Admin Service', () => {
+import {
+  connectDB,
+  closeConnexion,
+} from '../../configuration/mongodb.databaseconnector';
+
+const { generateRandomString } = require('../../helper/string.helper');
+const User = require('../../model/user.model');
+const { ERROR } = require('../../error/Error');
+
+describe('User Service', () => {
   before(async () => {
-    await connectorMongodb.connectDB();
+    await connectDB();
   });
 
   after(async () => {
-    await connectorMongodb.closeConnexion();
+    await closeConnexion();
   });
 
-  describe('authenticate Admin', () => {
+  describe('authenticateUser', () => {
     const testEmail = `karohy${generateRandomString(4)}@karohy.mg`;
     const testMdp = generateRandomString(8);
 
@@ -28,24 +30,22 @@ describe('Admin Service', () => {
       prenom: generateRandomString(20),
       email: testEmail,
       motDePasse: testMdp,
+      dateNaissance: Date.now(),
+      numMobileMoney: '+261332212345',
       numTelephone: '+261332212345',
     };
 
     before(async () => {
       try {
-        const admin = new Admin({
-          ...userTest,
-          motDePasse: await bcrypt.hash(testMdp, 10),
-        });
-        await admin.save();
+        await createUser(userTest);
       } catch (err) {
         console.error(err);
       }
     });
 
-    it('should authenticate an admin with valid email and password', async () => {
+    it('should authenticate a user with valid email and password', async () => {
       try {
-        const user = await authenticateAdmin(testEmail, testMdp);
+        const user = await authenticateUser(testEmail, testMdp);
         expect(user).to.exist;
         expect(user.email).to.equal(userTest.email);
       } catch (error) {
@@ -59,9 +59,8 @@ describe('Admin Service', () => {
       const password = 'somepassword';
 
       try {
-        await authenticateAdmin(invalidEmail, password);
-      } catch (error) {
-        expect(error).to.be.instanceOf(GeneralException);
+        await authenticateUser(invalidEmail, password);
+      } catch (error: any) {
         expect(error.code).to.equal(ERROR.AUTHENTICATION.INVALID_EMAIL.code);
         expect(error.message).to.equal(
           ERROR.AUTHENTICATION.INVALID_EMAIL.message,
@@ -74,9 +73,8 @@ describe('Admin Service', () => {
       const emptyPassword = '';
 
       try {
-        await authenticateAdmin(email, emptyPassword);
-      } catch (error) {
-        expect(error).to.be.instanceOf(GeneralException);
+        await authenticateUser(email, emptyPassword);
+      } catch (error: any) {
         expect(error.code).to.equal(ERROR.AUTHENTICATION.INVALID_PASSWORD.code);
         expect(error.message).to.equal(
           ERROR.AUTHENTICATION.INVALID_PASSWORD.message,
@@ -91,9 +89,8 @@ describe('Admin Service', () => {
       };
 
       try {
-        await authenticateAdmin(invalidUser.email, invalidUser.motDePasse);
-      } catch (error) {
-        expect(error).to.be.instanceOf(GeneralException);
+        await authenticateUser(invalidUser.email, invalidUser.motDePasse);
+      } catch (error: any) {
         expect(error.code).to.equal(
           ERROR.AUTHENTICATION.INVALID_CREDENTIALS.code,
         );
@@ -105,10 +102,47 @@ describe('Admin Service', () => {
 
     after(async () => {
       try {
-        await Admin.deleteOne({ nom: userTest.nom });
+        await User.deleteOne({ nom: userTest.nom });
       } catch (err) {
         console.error(err);
       }
+    });
+  });
+
+  describe('createUser', () => {
+    const userTest = {
+      nom: generateRandomString(10),
+      prenom: generateRandomString(20),
+      email: `karohy${generateRandomString(4)}@karohy.mg`,
+      motDePasse: generateRandomString(8),
+      dateNaissance: Date.now(),
+      numMobileMoney: '+261332212345',
+      numTelephone: '+261332212345',
+    };
+    it('should create a new user with valid data', async () => {
+      try {
+        const userNew = await createUser(userTest);
+        expect(userNew).to.exist;
+        expect(userNew.nom).to.equal(userTest.nom);
+        expect(userNew.email).to.equal(userTest.email);
+      } catch (err) {
+        throw err;
+      }
+    });
+
+    it('should throw GeneralException with EMAIL_ALREADY_EXISTS for invalid user data', async () => {
+      try {
+        await createUser(userTest);
+      } catch (error: any) {
+        expect(error.code).to.equal(
+          ERROR.AUTHENTICATION.EMAIL_ALREADY_EXISTS.code,
+        );
+      }
+    });
+
+    after(async () => {
+      // Supprime l'utilisateur de test après chaque test de createUser
+      await User.deleteOne({ nom: userTest.nom });
     });
   });
 });

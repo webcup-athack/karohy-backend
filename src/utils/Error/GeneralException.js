@@ -5,7 +5,7 @@ class GeneralException extends Error {
     this.status = status || 400;
   }
 
-  static formatException({ code, message, status }) {
+  static formatException({ code = 'UNKNOWN', message = '', status = '500' }) {
     return new GeneralException(code, message, status);
   }
 }
