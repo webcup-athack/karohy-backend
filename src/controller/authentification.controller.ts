@@ -7,7 +7,7 @@ import GeneralException from '../utils/Error/GeneralException';
 
 // Importing necessary libraries
 import jwt from 'jsonwebtoken';
-import { IAdmin, IUser } from '../types/app';
+import { IAdmin, IUser } from '../types/types';
 
 const SECRET_KEY = process.env.JWT_SECRET || 'test'; // Store this in a .env or another secure place
 

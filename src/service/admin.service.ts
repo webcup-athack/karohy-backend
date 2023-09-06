@@ -1,7 +1,7 @@
 import { ERROR } from '../error/Error';
 import { checkEmailFormat } from '../helper/string.helper';
 import Admin from '../model/admin.model';
-import { IAdmin } from '../types/app';
+import { IAdmin } from '../types/types';
 import GeneralException from '../utils/Error/GeneralException';
 import bcrypt from 'bcrypt';
 

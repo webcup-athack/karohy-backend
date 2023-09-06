@@ -1,4 +1,4 @@
-import { IAPIResponse, IError } from '../types/app';
+import { IAPIResponse, IError } from '../types/types';
 import { Response } from 'express';
 
 function formatError(err: { code: string; message: string }): IError {

@@ -3,7 +3,7 @@ const router = Router();
 
 /* GET home page. */
 router.get('/', function (req: Request, res: Response) {
-  res.render('index', { title: ' Karohy' });
+  res.send('Karohy backend');
 });
 
 export default router;

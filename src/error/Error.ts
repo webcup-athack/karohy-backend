@@ -1,4 +1,4 @@
-import { IGlobalError, IErrorStatusCode } from '../types/app';
+import { IGlobalError, IErrorStatusCode } from '../types/types';
 
 const ERROR_STATUS_CODE: IErrorStatusCode = {
   BAD_REQUEST: 400,

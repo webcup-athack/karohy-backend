@@ -12,7 +12,7 @@ import {
 import { generateRandomString } from '../../helper/string.helper';
 import User from '../../model/user.model';
 import { ERROR } from '../../error/Error';
-import { IUser } from '../../types/app';
+import { IUser } from '../../types/types';
 
 describe('User Service', () => {
   before(async () => {

@@ -1,6 +1,6 @@
 import { checkEmailFormat } from '../helper/string.helper';
 import User from '../model/user.model';
-import { IUser } from '../types/app';
+import { IUser } from '../types/types';
 import GeneralException from '../utils/Error/GeneralException';
 import bcrypt from 'bcrypt';
 import { ERROR } from '../error/Error';

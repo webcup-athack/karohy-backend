@@ -12,7 +12,7 @@ import { ERROR } from '../../error/Error';
 import bcrypt from 'bcrypt';
 
 import { authenticateAdmin } from '../../service/admin.service';
-import { IAdmin } from '../../types/app';
+import { IAdmin } from '../../types/types';
 
 describe('Admin Service', () => {
   before(async () => {
