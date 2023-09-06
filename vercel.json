@@ -2,11 +2,19 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/index.ts",
-      "use": "@vercel/node"
+      "src": "package.json",
+      "use": "@vercel/static-build"
     }
   ],
-  "routes": [{ "src": "/.*", "dest": "src/index.ts" }],
+  "routes": [{ "src": "/.*", "dest": "build/server.js" }],
+  "env": {
+    "BUILD_SCRIPT": "npm run build"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "@vercel/node"
+    }
+  },
   "git": {
     "deploymentEnabled": {
       "main": false,
