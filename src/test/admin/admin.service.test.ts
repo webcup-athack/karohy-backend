@@ -1,16 +1,18 @@
-require('dotenv').config();
+import { config } from 'dotenv';
+config();
 import { expect } from 'chai';
 
 import {
   connectDB,
   closeConnexion,
 } from '../../configuration/mongodb.databaseconnector';
-const { generateRandomString } = require('../../helper/string.helper');
-const Admin = require('../../model/admin.model');
-const { ERROR } = require('../../error/Error');
+import { generateRandomString } from '../../helper/string.helper';
+import Admin from '../../model/admin.model';
+import { ERROR } from '../../error/Error';
 import bcrypt from 'bcrypt';
 
-const { authenticateAdmin } = require('../../service/admin.service');
+import { authenticateAdmin } from '../../service/admin.service';
+import { IAdmin } from '../../types/app';
 
 describe('Admin Service', () => {
   before(async () => {
@@ -25,20 +27,20 @@ describe('Admin Service', () => {
     const testEmail = `karohy${generateRandomString(4)}@karohy.mg`;
     const testMdp = generateRandomString(8);
 
-    const userTest = {
-      nom: generateRandomString(10),
-      prenom: generateRandomString(20),
+    const adminTest: IAdmin = {
+      firstname: generateRandomString(10),
+      lastname: generateRandomString(20),
       email: testEmail,
-      motDePasse: testMdp,
-      numTelephone: '+261332212345',
+      password: testMdp,
+      phoneNumber: '+261332212345',
     };
 
     before(async () => {
       try {
         bcrypt.hash(testMdp, 10, async (err, hashed) => {
           const admin = new Admin({
-            ...userTest,
-            motDePasse: hashed,
+            ...adminTest,
+            password: hashed,
           });
           await admin.save();
         });
@@ -48,14 +50,9 @@ describe('Admin Service', () => {
     });
 
     it('should authenticate an admin with valid email and password', async () => {
-      try {
-        const user = await authenticateAdmin(testEmail, testMdp);
-        expect(user).to.exist;
-        expect(user.email).to.equal(userTest.email);
-      } catch (error) {
-        // Si une exception est levée, ce test échouera
-        throw error;
-      }
+      const user = (await authenticateAdmin(testEmail, testMdp)) as IAdmin;
+      expect(user).to.exist;
+      expect(user.email).to.equal(adminTest.email);
     });
 
     it('should throw GeneralException with ERROR_INVALID_EMAIL for invalid email', async () => {
@@ -88,7 +85,7 @@ describe('Admin Service', () => {
 
     it('should throw GeneralException with ERROR_INVALID_CREDENTIALS for invalid credentials', async () => {
       const invalidUser = {
-        email: `invalid${userTest.email}`,
+        email: `invalid${adminTest.email}`,
         motDePasse: 'invalidpassword',
       };
 
@@ -106,7 +103,7 @@ describe('Admin Service', () => {
 
     after(async () => {
       try {
-        await Admin.deleteOne({ nom: userTest.nom });
+        await Admin.deleteOne({ email: adminTest.email });
       } catch (err) {
         console.error(err);
       }

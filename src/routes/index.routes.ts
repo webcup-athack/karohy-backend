@@ -1,8 +1,8 @@
-var express = require('express');
-var router = express.Router();
+import { Request, Response, Router } from 'express';
+const router = Router();
 
 /* GET home page. */
-router.get('/', function (req: any, res: any, next: any) {
+router.get('/', function (req: Request, res: Response) {
   res.render('index', { title: ' Karohy' });
 });
 

@@ -1,24 +1,24 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-// var indexRouter = require('./routes/index.routes');
+import createHttpError from 'http-errors';
+import express, { Application, json, urlencoded } from 'express';
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
 import indexRouter from './routes/index.routes';
-var usersRouter = require('./routes/user.routes');
-var adminRouter = require('./routes/admin.routes');
+import usersRouter from './routes/user.routes';
+import adminRouter from './routes/admin.routes';
 import { readFile } from 'fs';
 import cors from 'cors';
 
-var app = express();
+const app: Application = express();
 
 // Configuration des variables d'environnement
-const dotenv = require('dotenv');
-dotenv.config({ path: '.env' });
+import { config } from 'dotenv';
+config({ path: '.env' });
 
 // Configuration de la base de donnée
-const dbMongoose = require('./configuration/mongodb.databaseconnector');
-dbMongoose.connectDB();
+import { connectDB } from './configuration/mongodb.databaseconnector';
+
+connectDB();
 
 app.use(cors());
 
@@ -27,10 +27,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(json());
+app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(static(path.join(__dirname, 'public')));
 
 const version = process.env.VERSION || 'v1';
 const apiBaseUrl = `/api/${version}`;
@@ -98,8 +98,8 @@ app.get('/docs', (req: any, res: any) => {
   });
 });
 
-app.get(`/swagger.json`, (req: any, res: any) => {
-  res.sendFile(__dirname + `/views/swagger.json`);
+app.get('/swagger.json', (req: any, res: any) => {
+  res.sendFile(__dirname + '/views/swagger.json');
 });
 
 app.use(`${apiBaseUrl}/users`, usersRouter);
@@ -107,11 +107,11 @@ app.use(`${apiBaseUrl}/admin`, adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req: any, res: any, next: any) {
-  next(createError(404));
+  next(createHttpError(404));
 });
 
 // // error handler
-app.use(function (err: any, req: any, res: any, next: any) {
+app.use(function (err: any, req: any, res: any) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

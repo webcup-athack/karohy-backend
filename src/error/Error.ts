@@ -1,4 +1,6 @@
-const ERROR_STATUS_CODE = {
+import { IGlobalError, IErrorStatusCode } from '../types/app';
+
+const ERROR_STATUS_CODE: IErrorStatusCode = {
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
@@ -39,7 +41,7 @@ const ERROR_STATUS_CODE = {
   NETWORK_AUTHENTICATION_REQUIRED: 511,
 };
 
-const ERROR = {
+const ERROR: IGlobalError = {
   TOKEN: {
     INVALID_OR_EXPIRED_TOKEN: {
       status: ERROR_STATUS_CODE.UNAUTHORIZED,
@@ -71,6 +73,7 @@ const ERROR = {
     EMAIL_ALREADY_EXISTS: {
       status: ERROR_STATUS_CODE.CONFLICT,
       code: 'ERROR_EMAIL_ALREADY_EXISTS',
+      message: 'An user with this email already exists',
     },
     UNKNOWN_ERROR: {
       status: ERROR_STATUS_CODE.INTERNAL_SERVER_ERROR,
@@ -80,4 +83,4 @@ const ERROR = {
   },
 };
 
-module.exports = { ERROR };
+export { ERROR };

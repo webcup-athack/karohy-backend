@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf ./build && tsc",
+    "build": "npm run test && npm run lint && rimraf ./build && tsc",
+    "lint": "eslint . --ext .ts",
     "start": "npm run build && node build/index.js",
     "test": "mocha --require ts-node/register src/test/**/*.test.ts --timeout 10000",
-    "dev": "npx nodemon",
-    "lint": "eslint . --ext .ts"
+    "dev": "npx nodemon"
   },
   "keywords": [],
   "author": "",

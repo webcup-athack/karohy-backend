@@ -1,10 +1,14 @@
-const { ERROR } = require('../error/Error');
-const { checkEmailFormat } = require('../helper/string.helper');
-const Admin = require('../model/admin.model');
-const GeneralException = require('../utils/Error/GeneralException');
-const bcrypt = require('bcrypt');
+import { ERROR } from '../error/Error';
+import { checkEmailFormat } from '../helper/string.helper';
+import Admin from '../model/admin.model';
+import { IAdmin } from '../types/app';
+import GeneralException from '../utils/Error/GeneralException';
+import bcrypt from 'bcrypt';
 
-const authenticateAdmin = async (email, password) => {
+const authenticateAdmin = async (
+  email: string,
+  password: string,
+): Promise<IAdmin | unknown> => {
   try {
     if (!checkEmailFormat(email)) {
       throw GeneralException.formatException(
@@ -17,18 +21,16 @@ const authenticateAdmin = async (email, password) => {
       );
     }
     const user = await Admin.findOne({ email: email });
-    if (user && (await bcrypt.compare(password, user.motDePasse))) {
+    if (user && bcrypt.compareSync(password, user.password)) {
       return user;
     } else {
       throw GeneralException.formatException(
         ERROR.AUTHENTICATION.INVALID_CREDENTIALS,
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     throw GeneralException.formatException(error);
   }
 };
 
-module.exports = {
-  authenticateAdmin: authenticateAdmin,
-};
+export { authenticateAdmin };

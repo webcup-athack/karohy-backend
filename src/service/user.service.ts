@@ -1,10 +1,14 @@
-const { checkEmailFormat } = require('../helper/string.helper');
-const User = require('../model/user.model');
-const GeneralException = require('../utils/Error/GeneralException');
-const bcrypt = require('bcrypt');
-const { ERROR } = require('../error/Error');
+import { checkEmailFormat } from '../helper/string.helper';
+import User from '../model/user.model';
+import { IUser } from '../types/app';
+import GeneralException from '../utils/Error/GeneralException';
+import bcrypt from 'bcrypt';
+import { ERROR } from '../error/Error';
 
-const authenticateUser = async (email, password) => {
+const authenticateUser = async (
+  email: string,
+  password: string,
+): Promise<IUser | unknown> => {
   try {
     if (!checkEmailFormat(email)) {
       throw GeneralException.formatException(
@@ -17,43 +21,44 @@ const authenticateUser = async (email, password) => {
       );
     }
     const user = await User.findOne({ email: email });
-    if (user && (await bcrypt.compare(password, user.motDePasse))) {
+    if (user && bcrypt.compareSync(password, user.password)) {
       return user;
     } else {
       throw GeneralException.formatException(
         ERROR.AUTHENTICATION.INVALID_CREDENTIALS,
       );
     }
-  } catch (error) {
+  } catch (error: any) {
+    // console.log(error);
     throw GeneralException.formatException(error);
   }
 };
 
-const createUser = async (data) => {
+const createUser = async (newUser: IUser): Promise<IUser | unknown> => {
   try {
-    const userExist = await User.findOne({ email: data.email });
+    const userExist = await User.findOne({ email: newUser.email });
     if (userExist) {
       throw GeneralException.formatException(
         ERROR.AUTHENTICATION.EMAIL_ALREADY_EXISTS,
       );
     }
 
-    if (!checkEmailFormat(data.email)) {
+    if (!checkEmailFormat(newUser.email)) {
       throw GeneralException.formatException(
         ERROR.AUTHENTICATION.INVALID_EMAIL,
       );
     }
 
-    if (data.motDePasse === undefined || data.motDePasse.trim() === '') {
+    if (newUser.password === undefined || newUser.password.trim() === '') {
       throw GeneralException.formatException(
         ERROR.AUTHENTICATION.INVALID_PASSWORD,
       );
     }
-    const hashedPassword = await bcrypt.hash(data.motDePasse, 10);
-    data.motDePasse = hashedPassword;
-    const newUser = new User(data);
-    const user = await newUser.save();
-    if (user) user.motDePasse = '';
+    const hashedPassword = bcrypt.hashSync(newUser.password, 10);
+    newUser.password = hashedPassword;
+    const userCreated = new User(newUser);
+    const user = await userCreated.save();
+    if (user) user.password = '';
     else {
       throw GeneralException.formatException(
         ERROR.AUTHENTICATION.UNKNOWN_ERROR,
@@ -61,12 +66,9 @@ const createUser = async (data) => {
     }
 
     return user;
-  } catch (errorCreateUser) {
+  } catch (errorCreateUser: any) {
     throw GeneralException.formatException(errorCreateUser);
   }
 };
 
-module.exports = {
-  authenticateUser: authenticateUser,
-  createUser: createUser,
-};
+export { authenticateUser, createUser };

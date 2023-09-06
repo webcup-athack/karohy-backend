@@ -1,17 +1,19 @@
 import { expect } from 'chai';
-const { authenticateUser, createUser } = require('../../service/user.service'); // Chemin vers votre fichier user.service
+import { createUser, authenticateUser } from '../../service/user.service';
 
-require('dotenv').config();
+import { config } from 'dotenv';
+config();
 
 import {
   connectDB,
   closeConnexion,
 } from '../../configuration/mongodb.databaseconnector';
 
-const { generateRandomString } = require('../../helper/string.helper');
-const User = require('../../model/user.model');
-const { ERROR } = require('../../error/Error');
- 
+import { generateRandomString } from '../../helper/string.helper';
+import User from '../../model/user.model';
+import { ERROR } from '../../error/Error';
+import { IUser } from '../../types/app';
+
 describe('User Service', () => {
   before(async () => {
     await connectDB();
@@ -25,14 +27,13 @@ describe('User Service', () => {
     const testEmail = `karohy${generateRandomString(4)}@karohy.mg`;
     const testMdp = generateRandomString(8);
 
-    const userTest = {
-      nom: generateRandomString(10),
-      prenom: generateRandomString(20),
+    const userTest: IUser = {
+      firstname: generateRandomString(10),
+      lastname: generateRandomString(20),
       email: testEmail,
-      motDePasse: testMdp,
-      dateNaissance: Date.now(),
-      numMobileMoney: '+261332212345',
-      numTelephone: '+261332212345',
+      password: testMdp,
+      birthdate: Date.now(),
+      phoneNumber: '+261332212345',
     };
 
     before(async () => {
@@ -44,14 +45,9 @@ describe('User Service', () => {
     });
 
     it('should authenticate a user with valid email and password', async () => {
-      try {
-        const user = await authenticateUser(testEmail, testMdp);
-        expect(user).to.exist;
-        expect(user.email).to.equal(userTest.email);
-      } catch (error) {
-        // Si une exception est levée, ce test échouera
-        throw error;
-      }
+      const user = await authenticateUser(testEmail, testMdp) as IUser;
+      expect(user).to.exist;
+      expect(user.email).to.equal(userTest.email);
     });
 
     it('should throw GeneralException with ERROR_INVALID_EMAIL for invalid email', async () => {
@@ -102,7 +98,7 @@ describe('User Service', () => {
 
     after(async () => {
       try {
-        await User.deleteOne({ nom: userTest.nom });
+        await User.deleteOne({ email: userTest.email });
       } catch (err) {
         console.error(err);
       }
@@ -110,24 +106,22 @@ describe('User Service', () => {
   });
 
   describe('createUser', () => {
-    const userTest = {
-      nom: generateRandomString(10),
-      prenom: generateRandomString(20),
-      email: `karohy${generateRandomString(4)}@karohy.mg`,
-      motDePasse: generateRandomString(8),
-      dateNaissance: Date.now(),
-      numMobileMoney: '+261332212345',
-      numTelephone: '+261332212345',
+    const testEmail = `karohy${generateRandomString(4)}@karohy.mg`;
+    const testMdp = generateRandomString(8);
+    const userTest: IUser = {
+      firstname: generateRandomString(10),
+      lastname: generateRandomString(20),
+      email: testEmail,
+      password: testMdp,
+      birthdate: Date.now(),
+      phoneNumber: '+261332212345',
     };
+
     it('should create a new user with valid data', async () => {
-      try {
-        const userNew = await createUser(userTest);
-        expect(userNew).to.exist;
-        expect(userNew.nom).to.equal(userTest.nom);
-        expect(userNew.email).to.equal(userTest.email);
-      } catch (err) {
-        throw err;
-      }
+      const userNew = await createUser(userTest) as IUser;
+      expect(userNew).to.exist;
+      expect(userNew.lastname).to.equal(userTest.lastname);
+      expect(userNew.email).to.equal(userTest.email);
     });
 
     it('should throw GeneralException with EMAIL_ALREADY_EXISTS for invalid user data', async () => {
@@ -142,7 +136,7 @@ describe('User Service', () => {
 
     after(async () => {
       // Supprime l'utilisateur de test après chaque test de createUser
-      await User.deleteOne({ nom: userTest.nom });
+      await User.deleteOne({ email: userTest.email });
     });
   });
 });
