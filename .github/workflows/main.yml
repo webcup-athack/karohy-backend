@@ -30,7 +30,7 @@ jobs:
 
   Deploy_Prod:
     runs-on: ubuntu-latest
-    needs: Build
+    needs: Build_Prod
     if: success()
 
     steps:
