@@ -13,7 +13,8 @@
     }
   ],
   "env": {
-    "BUILD_SCRIPT": "npm run build"
+    "BUILD_SCRIPT": "npm run build",
+    "NODE_ENV": "production"
   },
   "functions": {
     "api/**/*.ts": {
