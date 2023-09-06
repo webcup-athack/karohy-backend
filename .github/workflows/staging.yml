@@ -9,7 +9,7 @@ on:
       - staging
 
 jobs:
-  Build_Staging:
+  Build_Staging: 
     runs-on: ubuntu-latest
 
     steps:
