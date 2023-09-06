@@ -4,6 +4,6 @@ var express_1 = require("express");
 var router = (0, express_1.Router)();
 /* GET home page. */
 router.get('/', function (req, res) {
-    res.send('Karohy backend');
+    res.send('Karohy backend | |');
 });
 exports.default = router;
