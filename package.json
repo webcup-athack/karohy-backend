@@ -4,12 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm run test && npm run lint && rimraf ./build && tsc",
-    "lint": "eslint . --ext .ts",
     "start": "node build/index.js",
+    "build": "npm run test && npm run lint && rimraf ./build && tsc",
+    "ts.check": "tsc --project tsconfig.json",
+    "add-build": "git add build",
+    "lint": "eslint . --ext .ts",
     "test": "mocha --require ts-node/register src/test/**/*.test.ts --timeout 10000",
     "dev": "npx nodemon"
   },
+  "pre-commit": [
+    "ts.check",
+    "build",
+    "add-build"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
