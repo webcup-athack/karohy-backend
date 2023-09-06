@@ -64,11 +64,11 @@ app.get('/docs', (req: any, res: any) => {
   ) {
     (host = `localhost:${port}`), (scheme = ['http']);
   }
-
-  readFile('src/views/swagger.json', 'utf8', (err: any, data: any) => {
+  const swaggerFilePath = path.resolve(__dirname, 'swagger.json');
+  readFile(swaggerFilePath, 'utf8', (err: any, data: any) => {
     if (err) {
       console.error('Error reading swagger.json:', err);
-      return res.status(500).send('Internal Server Error');
+      return res.status(500).send('Error reading swagger');
     }
 
     // Modify content based on environment

@@ -78,10 +78,11 @@ app.get('/docs', function (req, res) {
         host === "localhost:".concat(port)) {
         (host = "localhost:".concat(port)), (scheme = ['http']);
     }
-    (0, fs_1.readFile)('src/views/swagger.json', 'utf8', function (err, data) {
+    var swaggerFilePath = path_1.default.resolve(__dirname, 'swagger.json');
+    (0, fs_1.readFile)(swaggerFilePath, 'utf8', function (err, data) {
         if (err) {
             console.error('Error reading swagger.json:', err);
-            return res.status(500).send('Internal Server Error');
+            return res.status(500).send('Error reading swagger');
         }
         // Modify content based on environment
         var modifiedSwaggerContent = modifySwaggerHost(data, host, scheme);
