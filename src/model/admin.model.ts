@@ -19,7 +19,7 @@ const adminSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    phoneNumber: {
+    phone_number: {
       type: String,
       required: true,
     },

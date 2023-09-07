@@ -19,11 +19,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    birthdate: {
+    birth_date: {
       type: Date,
       required: true,
     },
-    phoneNumber: {
+    phone_number: {
       type: String,
       required: true,
     },

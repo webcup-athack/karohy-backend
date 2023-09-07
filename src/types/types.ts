@@ -27,8 +27,8 @@ export interface IUser {
   lastname: string;
   email: string;
   password: string;
-  birthdate: Date | number | string;
-  phoneNumber: string;
+  birth_date: Date | number | string;
+  phone_number: string;
 }
 
 export interface IAdmin {
@@ -37,5 +37,5 @@ export interface IAdmin {
   lastname: string;
   email: string;
   password: string;
-  phoneNumber: string;
+  phone_number: string;
 }

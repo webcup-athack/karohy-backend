@@ -32,8 +32,8 @@ describe('User Service', () => {
       lastname: generateRandomString(20),
       email: testEmail,
       password: testMdp,
-      birthdate: Date.now(),
-      phoneNumber: '+261332212345',
+      birth_date: Date.now(),
+      phone_number: '+261332212345',
     };
 
     before(async () => {
@@ -113,8 +113,8 @@ describe('User Service', () => {
       lastname: generateRandomString(20),
       email: testEmail,
       password: testMdp,
-      birthdate: Date.now(),
-      phoneNumber: '+261332212345',
+      birth_date: Date.now(),
+      phone_number: '+261332212345',
     };
 
     it('should create a new user with valid data', async () => {

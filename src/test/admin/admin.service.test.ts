@@ -32,7 +32,7 @@ describe('Admin Service', () => {
       lastname: generateRandomString(20),
       email: testEmail,
       password: testMdp,
-      phoneNumber: '+261332212345',
+      phone_number: '+261332212345',
     };
 
     before(async () => {

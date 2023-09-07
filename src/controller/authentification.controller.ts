@@ -19,6 +19,7 @@ const login = async (request: Request, response: Response) => {
       const token = jwt.sign({ userid: user._id }, SECRET_KEY, {
         expiresIn: '24h',
       });
+      delete user.password;
       return formatAPIResponse(response, {
         status: 200,
         message: 'Successfully connected',
@@ -46,8 +47,8 @@ const inscription = (request: Request, response: Response) => {
     lastname: lastname,
     email: email,
     password: password,
-    birthdate: birth_date,
-    phoneNumber: phone_number,
+    birth_date: birth_date,
+    phone_number: phone_number,
   };
 
   createUser(userData)
@@ -55,7 +56,7 @@ const inscription = (request: Request, response: Response) => {
       const token = jwt.sign({ userid: user._id }, SECRET_KEY, {
         expiresIn: '24h',
       }); // Generate the JWT token for the registered user
-
+      delete user.password;
       return formatAPIResponse(response, {
         status: 200,
         message: 'Registered user successfully',
@@ -82,6 +83,7 @@ const loginAdmin = async (request: Request, response: Response) => {
       const token = jwt.sign({ adminId: admin._id }, SECRET_KEY, {
         expiresIn: '24h',
       });
+      delete admin.password;
       return formatAPIResponse(response, {
         status: 200,
         message: 'Admin connecté avec succès',
