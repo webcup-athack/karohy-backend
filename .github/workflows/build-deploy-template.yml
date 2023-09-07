@@ -1,0 +1,58 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - ${{ matrix.branch }}
+
+jobs:
+  Build_Deploy:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        branch:
+          - main
+          - staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          ENVIRONMENT: ${{ matrix.environment }}
+        run: |
+          if [ "$ENVIRONMENT" == "production" ]; then
+            vercel pull --yes --environment=production --token $VERCEL_TOKEN
+          else
+            vercel pull --yes --environment=preview --token $VERCEL_TOKEN
+          fi
+
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          ENVIRONMENT: ${{ matrix.environment }}
+        run: |
+          if [ "$ENVIRONMENT" == "production" ]; then
+            # Deploy the build directory to Vercel for production
+            vercel --prod --token $VERCEL_TOKEN
+          else
+            # Deploy the build directory to Vercel for staging
+            vercel --token $VERCEL_TOKEN
+          fi
