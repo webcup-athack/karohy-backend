@@ -1,18 +1,42 @@
-name: Karohy backend - CI Staging Deployment
-
+name: Karohy backend - CI staging Deployment
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
 on:
   push:
     branches:
       - staging
-
 jobs:
   Build_Deploy_Staging:
-    strategy:
-      matrix:
-        environment: preview
+    runs-on: ubuntu-latest
+
     steps:
-      - template: .github/workflows/build-deploy-template.yml
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel pull --yes --environment=preview --token $VERCEL_TOKEN
+
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          # Deploy the build directory to Vercel
+          vercel --token $VERCEL_TOKEN
