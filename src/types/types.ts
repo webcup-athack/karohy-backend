@@ -26,7 +26,7 @@ export interface IUser {
   firstname: string;
   lastname: string;
   email: string;
-  password: string;
+  password?: string;
   birth_date: Date | number | string;
   phone_number: string;
 }

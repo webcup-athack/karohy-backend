@@ -8,6 +8,10 @@ import GeneralException from '../utils/Error/GeneralException';
 // Importing necessary libraries
 import jwt from 'jsonwebtoken';
 import { IAdmin, IUser } from '../types/types';
+import {
+  formatUserLoginResponse,
+  formatUserRegisterResponse,
+} from '../helper/user.helper';
 
 const SECRET_KEY = process.env.JWT_SECRET || 'test'; // Store this in a .env or another secure place
 
@@ -19,12 +23,14 @@ const login = async (request: Request, response: Response) => {
       const token = jwt.sign({ userid: user._id }, SECRET_KEY, {
         expiresIn: '24h',
       });
-      delete user.password;
+
+      console.log(user);
+      console.log(formatUserLoginResponse(user));
       return formatAPIResponse(response, {
         status: 200,
         message: 'Successfully connected',
         datas: {
-          user: user,
+          user: formatUserLoginResponse(user),
           token,
         },
       });
@@ -61,7 +67,7 @@ const inscription = (request: Request, response: Response) => {
         status: 200,
         message: 'Registered user successfully',
         datas: {
-          user: user,
+          user: formatUserRegisterResponse(user),
           token, // Include the token in the response
         },
       });
